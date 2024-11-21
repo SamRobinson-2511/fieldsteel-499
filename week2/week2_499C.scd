@@ -174,6 +174,33 @@ FreqScope.new;
 )
 
 
+/////////////////////////////////////////modulators in series
+(
+SynthDef(\fm, {
+	var sig, mod, mod2, env;
+/*	env = Env([0, 1, 0], [\atk.ir(0.01), \rel.ir(3)], [1, -1]).ar(2);*/
+	mod2 = SinOsc.ar(MouseX.kr(1, 1000, 1), mul: 240);
+	mod = SinOsc.ar(
+		(\freq.kr(700) * \ratio.kr(100/400)) + mod2,
+		mul: \freq.kr(700) * \ratio.kr(100/400) * \index.kr(8)
+	);
+	sig = SinOsc.ar(\freq.kr(700) + mod);
+	sig = Pan2.ar(sig, \pan.kr(0), \amp.kr(0.1));
+	// sig = sig * env;
+	Out.ar(\out.ir(0), sig);
+}).add;
+)
+
+Synth(\fm, [\freq, 400]);
+
+(
+p = Routine({
+	loop{
+		Synth(\fm, [\freq, 100, \rel, 2]);
+		2.wait;
+	}
+}).play;
+)
 
 
 
