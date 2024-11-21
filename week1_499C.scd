@@ -53,4 +53,130 @@ SynthDef(\reverb, {
 }).add;
 )
 
+s.newBusAllocators;
+~reverbBus = Bus.audio(s, 2);
+
+~fxGroup = Group.new;
+~reverb = Synth(\reverb, [\in, ~reverbBus], ~fxGroup);
+
+
+Synth(\beep, [\freq, 1200, \out, 0, \outfx, ~reverbBus, \send, -20]);
+Synth(\samp, [\buf, ~b3, \out, 0]);
+Synth(\samp, [\buf, ~b3, \out, 0, \outfx,  ~reverbBus, \send, 0]);
+
+
+(
+~sampPat = Pbind(
+	\instrument, \samp,
+	\dur, 1/8,
+	\type, Pwrand([\note, \rest], [0.6, 0.4], inf),
+	\buf, Prand([~b0, ~b1, ~b2, ~b3], inf),
+	\rate, Pwhite(-12, 12, inf).midiratio,
+	\amp, Pexprand(0.02, 0.5, inf),
+	\atk, 0,
+	\sus, 0,
+	\rel, Pexprand(0.02, 0.5, inf),
+	\out, 0,
+	\outfx, ~reverbBus,
+	\send, Pwhite(-40, -10, inf)
+);
+)
+
+
+~sampPlayer = ~sampPat.play;
+~sampPlayer.stop;
+
+
+(
+~beepPat = Pbind(
+	\instrument, \beep,
+	\dur, 2,
+	\atk, 0,
+	\sus, 0.02,
+	\rel, 0.02,
+	\freq, 1000,
+	\amp, Pexprand(0.02, 0.2, inf),
+	\pan, Pseq([-1, 0, 1, 0], inf),
+	\out, 0,
+	\outfx, ~reverbBus,
+	\send, -10
+);
+)
+
+~beepPlayer = ~beepPat.play;
+~beepPlayer.stop;
+
+
+(
+~dronesPat = Pbind(
+	\instrument, \beep,
+	\dur, 5,
+	\atk, 4,
+	\sus, 0,
+	\rel, 4,
+	\freq, Pexprand(150, 300, inf) * Pfuncn({Array.rand(16, -1.0, 1.0).midiratio}, inf),
+	\amp, 0.02,
+	\out, 0,
+	\outfx, ~reverbBus,
+	\send, -10
+);
+)
+
+~dronesPlayer = ~dronesPat.play;
+~dronesPlayer.stop;
+
+
+//event 0
+~sampPlayer = ~sampPat.play(quant: 1);
+//event 1
+~beepPlayer = ~beepPat.play(quant: 1);
+//event 2
+~dronesPlayer = ~dronesPat.play;
+//event 3
+(
+~sampPlayer.stop;
+~dronesPlayer.stop;
+)
+//event 4
+~beepPlayer.stop;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
