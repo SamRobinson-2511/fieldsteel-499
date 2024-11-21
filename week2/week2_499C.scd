@@ -112,6 +112,8 @@ p = Routine({
 s.scope;
 FreqScope.new;
 )
+
+
 /////////////////////////////////////////
 (
 SynthDef(\fm, {
@@ -122,13 +124,13 @@ SynthDef(\fm, {
 		mul:\freq.kr(400) * \ratio.kr(2) * \index.kr(1)
 	);
 	sig = SinOsc.ar(\freq.kr(400) + mod);
-	sig = Pan2.ar(sig, \pan.kr(0), \amp.kr(0.2));
+	sig = Pan2.ar(sig, \pan.kr(0), \amp.kr(0.1));
 	sig = sig * env;
 	Out.ar(\out.ir(0), sig);
 }).add;
 )
 
-Synth(\fm, [\freq, 63.midicps, \index, 1]);
+Synth(\fm, [\freq, 63.midicps, \index, 6000]);
 
 (
 p = Routine({
@@ -141,10 +143,35 @@ s.scope;
 FreqScope.new;
 )
 
+/////////////////////////////////////////rationally related
+(
+SynthDef(\fm, {
+	var sig, mod, env, ienv;
+	ienv = Env([1, \ipeak.ir(25), 1], [\atk.ir(0.01), \irel.ir(3)], [-3, -100]).ar;
+	env = Env([0, 1, 0], [\atk.ir(0.01), \rel.ir(3)], [1, -1]).ar(2);
+	mod = SinOsc.ar(
+		\freq.kr(400) * \ratio.kr(2),
+		mul:\freq.kr(400) * \ratio.kr(2) * ienv
+	);
+	sig = SinOsc.ar(\freq.kr(400) + mod);
+	sig = Pan2.ar(sig, \pan.kr(0), \amp.kr(0.1));
+	sig = sig * env;
+	Out.ar(\out.ir(0), sig);
+}).add;
+)
 
+Synth(\fm, [\freq, 40.midicps]);
 
-
-
+(
+p = Routine({
+	loop{
+		Synth(\fm, [\freq, 41.midicps]);
+		3.wait;
+	};
+}).play;
+s.scope;
+FreqScope.new;
+)
 
 
 
