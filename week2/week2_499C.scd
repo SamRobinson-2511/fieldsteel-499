@@ -246,6 +246,13 @@ s.options.blockSize;
 
 Synth(\fmfeedback);
 
+//s.options.bolckSize(512);
+
+s.options.blockSize_(8);
+s.reboot;
+
+
+
 
 
 
