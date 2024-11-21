@@ -1,6 +1,10 @@
 //https://www.youtube.com/watch?v=ztVLMS15n1c&list=PLPYzvS8A_rTbTAn-ZExGuVFZgVMwYi1kJ
 
 (
+
+~count = 0;
+
+
 ServerTree.removeAll;
 
 s.newBusAllocators;
@@ -12,6 +16,17 @@ s.newBusAllocators;
 		~reverb = Synth(\reverb, [\in, ~reverbBus], ~fxGroup);
 	});
 };
+
+~events = [
+	{~sampPlayer = ~sampPat.play(quant: 1)},
+	{~beepPlayer = ~beepPat.play(quant: 1)},
+	{~dronesPlayer = ~dronesPat.play},
+	{
+		~sampPlayer.stop;
+		~dronesPlayer.stop;
+	},
+	{~beepPlayer.stop;}
+];
 
 s.waitForBoot({
 
@@ -73,7 +88,7 @@ s.waitForBoot({
 
 	~sampPat = Pbind(
 		\instrument, \samp,
-		\dur, 1/8,
+		\dur, 1/16,
 		\type, Pwrand([\note, \rest], [0.6, 0.4], inf),
 		\buf, Prand(b, inf),
 		\rate, Pwhite(-12, 12, inf).midiratio,
@@ -117,6 +132,21 @@ s.waitForBoot({
 )
 
 
+(
+~events[~count].value;
+~count = ~count + 1;
+if(~count >= ~events.size, {~count = 0});
+~count;
+)
+
+/*~events[0].value;
+~events[1].value;
+~events[2].value;
+~events[3].value;
+~events[4].value;*/
+
+
+
 
 ~fn = {"***rebuilt***".postln};
 ServerTree.add(~fn);
@@ -126,23 +156,22 @@ ServerTree.add(~fn);
 
 
 
-//event 0
-~sampPlayer = ~sampPat.play(quant: 1);
-//event 1
-~beepPlayer = ~beepPat.play(quant: 1);
-//event 2
-~dronesPlayer = ~dronesPat.play;
-//event 3
-(
-~sampPlayer.stop;
-~dronesPlayer.stop;
-)
-//event 4
-~beepPlayer.stop;
 
 
 
-ServerTree.freeAll;
+
+
+
+
+
+
+~fn = {"***rebuilt***".postln};
+ServerTree.add(~fn);
+
+s.reboot;
+
+
+
 
 
 
