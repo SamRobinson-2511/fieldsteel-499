@@ -178,20 +178,23 @@ FreqScope.new;
 (
 SynthDef(\fm, {
 	var sig, mod, mod2, env;
-/*	env = Env([0, 1, 0], [\atk.ir(0.01), \rel.ir(3)], [1, -1]).ar(2);*/
-	mod2 = SinOsc.ar(MouseX.kr(1, 1000, 1), mul: 240);
-	mod = SinOsc.ar(
-		(\freq.kr(700) * \ratio.kr(100/400)) + mod2,
-		mul: \freq.kr(700) * \ratio.kr(100/400) * \index.kr(8)
+	env = Env([0,1,0], [\atk.ir(0.01), \rel.ir(10)], [1, -1]).ar(2);
+	mod2 = SinOsc.ar(
+		\freq.kr(400) * \ratio2.kr(8/400),
+		mul: \freq.kr(400) * \ratio2.kr(8/400) * \index2.kr(100)
 	);
-	sig = SinOsc.ar(\freq.kr(700) + mod);
-	sig = Pan2.ar(sig, \pan.kr(0), \amp.kr(0.1));
-	// sig = sig * env;
+	mod = SinOsc.ar(
+		(\freq.kr(400) * \ratio.kr(8/400)),
+		mul: \freq.kr(400) * \ratio2.kr(8/400) * \index.kr(20)
+		);
+	sig = SinOsc.ar(\freq.kr(400) + mod + mod2);
+	sig = Pan2.ar(sig, \pan.kr(0), \amp.kr(0.2));
+	sig = sig * env;
 	Out.ar(\out.ir(0), sig);
 }).add;
 )
 
-Synth(\fm, [\freq, 400]);
+Synth(\fm, [\freq, 200]);
 
 (
 p = Routine({
@@ -202,6 +205,27 @@ p = Routine({
 }).play;
 )
 
+/////////////////////////////////////////modulators in parallel
+(
+SynthDef(\fm, {
+	var sig, mod, mod2, env;
+	env = Env([0, 1, 0], [\atk.ir(0.01), \rel.ir(10)], [1, -1]).ar(2);
+	mod2 = SinOsc.ar(
+/*		\freq.kr(400) * \ratio2.kr(1/400),*/
+		\freq.kr(400) * MouseX.kr(1, 2000, 1),
+		mul: \freq.kr(400) * \ratio2.kr(12/400) * \index2.kr(100)
+	);
+	mod = SinOsc.ar(
+		(\freq.kr(400) * \ratio.kr(8/400)),
+		mul: \freq.kr(400) * \ratio.kr(8/400) * \index.kr(20);
+	);
+	sig = SinOsc.ar(\freq.kr(400) + mod + mod2);
+	sig = Pan2.ar(sig, \pan.kr(0), \amp.kr(0.2));
+	Out.ar(\out.ir(0), sig);
+}).add;
+)
+
+Synth(\fm);
 
 
 
