@@ -211,8 +211,8 @@ SynthDef(\fm,{
 	var sig, mod, mod2, env;
 	env = Env([0, 1, 0], [\atk.ir(0.01), \rel.ir(10)],[1, -1]).ar(2);
 	mod2 = SinOsc.ar(
-		(\freq.kr(400) * \ratio2.kr(8/400)),
-		mul: \freq.kr(400) * \ratio2.kr(8/400) * \index2.kr(100)
+		(\freq.kr(400) * \ratio2.kr(1)),
+		mul: \freq.kr(400) * \ratio2.kr(1) * \index2.kr(100)
 	);
 	mod = SinOsc.ar(
 		(\freq.kr(400) * \ratio.kr(1)),
@@ -225,12 +225,26 @@ SynthDef(\fm,{
 }).add;
 )
 
-Synth(\fm, [\freq, exprand(20.0, 10000.0), \ratio, exprand(0.1, 2000.0), \ratio2, exprand(0.1, 20000.0)]);
+Synth(\fm, [\freq, exprand(20.0, 10000.0), \ratio, exprand(0.01, 20000.0), \ratio2, exprand(0.1, 200.0)]);
 
 
+/////////////////////////////////////////fm feedback
 
+(
+SynthDef(\fmfeedback, {
+	var sig, fb;
+	fb = LocalIn.ar(1);
+	// sig = SinOsc.ar(\freq.kr(400) + (fb * MouseX.kr(1, 10000, 1)));
+	sig = SinOsc.ar(MouseY.kr(20, 20000, 1) + (fb * MouseX.kr(1, 10000, 1)));
+	LocalOut.ar(sig);
+	sig = Pan2.ar(sig, 0, 0.2);
+	Out.ar(0, sig);
+}).add;
+)
 
+s.options.blockSize;
 
+Synth(\fmfeedback);
 
 
 
