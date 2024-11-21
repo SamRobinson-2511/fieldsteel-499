@@ -207,25 +207,25 @@ p = Routine({
 
 /////////////////////////////////////////modulators in parallel
 (
-SynthDef(\fm, {
+SynthDef(\fm,{
 	var sig, mod, mod2, env;
-	env = Env([0, 1, 0], [\atk.ir(0.01), \rel.ir(10)], [1, -1]).ar(2);
+	env = Env([0, 1, 0], [\atk.ir(0.01), \rel.ir(10)],[1, -1]).ar(2);
 	mod2 = SinOsc.ar(
-/*		\freq.kr(400) * \ratio2.kr(1/400),*/
-		\freq.kr(400) * MouseX.kr(1, 2000, 1),
-		mul: \freq.kr(400) * \ratio2.kr(12/400) * \index2.kr(100)
+		(\freq.kr(400) * \ratio2.kr(8/400)),
+		mul: \freq.kr(400) * \ratio2.kr(8/400) * \index2.kr(100)
 	);
 	mod = SinOsc.ar(
-		(\freq.kr(400) * \ratio.kr(8/400)),
-		mul: \freq.kr(400) * \ratio.kr(8/400) * \index.kr(20);
+		(\freq.kr(400) * \ratio.kr(1)),
+		mul: \freq.kr(400) * \ratio.kr(1) * \index.kr(20);
 	);
 	sig = SinOsc.ar(\freq.kr(400) + mod + mod2);
 	sig = Pan2.ar(sig, \pan.kr(0), \amp.kr(0.2));
+	sig = sig * env;
 	Out.ar(\out.ir(0), sig);
 }).add;
 )
 
-Synth(\fm);
+Synth(\fm, [\freq, exprand(20.0, 10000.0), \ratio, exprand(0.1, 2000.0), \ratio2, exprand(0.1, 20000.0)]);
 
 
 
