@@ -33,7 +33,7 @@ q = p.play;
 q.stop;
 
 
-//CUMBERSOME, AVOID
+//CUMBERSOME, AVOID, GONNA FRY THE SERVER
 (
 SynthDef(\fx, {
 	var sig;
@@ -75,6 +75,19 @@ s.meter;
 	Out.kr(47, sig);
 }.play;
 )
+
+(
+{
+	var sig;
+	sig = In.ar(19, 2);
+	sig = FreeVerb2.ar(sig[0], sig[1], 0.3, 0.99);
+	Out.ar(0, sig);
+}.play;
+)
+
+Synth(\pulse, [freq: rrand(50, 100).midicps, amp: 0.4, \out, 19]);
+
+
 s.scope;
 
 
