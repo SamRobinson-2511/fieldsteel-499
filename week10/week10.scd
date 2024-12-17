@@ -33,4 +33,74 @@ q = p.play;
 q.stop;
 
 
+//CUMBERSOME, AVOID
+(
+SynthDef(\fx, {
+	var sig;
+	Line.kr(0, 0, 8, doneAction: 2);
+	sig = SinOsc.ar(800!2) * 0.5;
+	sig = sig * Env.perc(0.01, 0.1).kr(0);
+	sig = FreeVerb2.ar(sig[0], sig[1], 0.3, 0.99);
+	Out.ar(0, sig);
+}).add;
+)
+
+Synth(\fx);
+
+
+//BUSSES
+s.options.numAudioBusChannels;
+s.options.numControlBusChannels;
+s.options.numPrivateAudioBusChannels;
+s.options.numOutputBusChannels = 8;
+s.options.numInputBusChannels = 8;
+s.reboot;
+s.meter;
+
+
+
+(
+{
+	var sig;
+	sig = PinkNoise.ar(0.2!2);
+	Out.ar(19, sig);
+}.play;
+)
+
+
+(
+{
+	var sig;
+	sig = LFNoise0.kr(9);
+	Out.kr(47, sig);
+}.play;
+)
+s.scope;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
