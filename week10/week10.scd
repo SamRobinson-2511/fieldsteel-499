@@ -85,10 +85,57 @@ s.meter;
 }.play;
 )
 
-Synth(\pulse, [freq: rrand(50, 100).midicps, amp: 0.4, \out, 19]);
+Synth(\pulse, [freq: rrand(50, 100).midicps, amp: 0.4, \out, 19]); //using numbers is messy, use bus class
+
+
+//Bus class is not server side
+//Be conscious of your channels
+//Next available block taken by hardware input/output
+
+
+//reverb as SynthDef
+(
+SynthDef(\reverb, {
+	var sig;
+	sig = In.ar(\in.ir(0), 2);
+	sig = FreeVerb2.ar(sig[0], sig[1], 0.3, 0.99);
+	Out.ar(\out.ir(0), sig);
+}).add;
+)
+
+Synth(\reverb, [in: ~reverbBus, out: 0]);
+Synth(\pulse, [freq: rrand(50, 100).midicps, amp: 0.4, \out, ~reverbBus]);
+
+(
+p = Pbind(
+	\instrument, \pulse,
+	\midinote, Pwhite(40.0, 108.0),
+	\dur, Pexprand(0.05, 0.5),
+	\db, Pwhite(-25.0, -10.0),
+	\rel, Pexprand(0.07, 0.3),
+	\out, ~reverbBus
+);
+q = p.play;
+)
+q.stop;
+
+s.scope;
+
+(
+s.newBusAllocators; //prepend
+~reverbBus = Bus.audio(s, 2);
+~reverbBus.index;
+~reverbBus.numChannels;
+~delayBus = Bus.audio(s, 2);
+~delayBus.index;
+~delayBus.numChannels;
+)
+
 
 
 s.scope;
+
+
 
 
 
