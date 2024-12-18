@@ -29,3 +29,25 @@ s.sendMsg('/n_set', 3456, 'gate', 0);
 s.sendMsg('/n_free', 3456);
 
 
+//NetAddr
+NetAddr.langPort;
+
+~sam = NetAddr("192.168.12.228", 57120);
+~sam.sendMsg('/test', 24);
+
+(
+OSCdef(\receiver, {
+	|msg|
+	msg.postln;
+}, '/test');
+)
+s.boot;
+(
+OSCdef(\receiver, {
+	|msg|
+	msg.postln;
+	Synth(\play, [buf: b, amp: 0.2, rate: msg[1].midiratio])
+
+}, '/test');
+)
+
