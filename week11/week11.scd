@@ -4,7 +4,24 @@ MIDIClient.init;
 MIDIIn.connectAll;
 //debug
 MIDIFunc.trace(false);
-MIDIOut(2);
+m = MIDIOut(2);
+m = MIDIOut.newByName("Micro Express USB", "Port 1");
+MIDIClient.destinations;
+m.latency = 0;
+
+m.noteOn(0, rrand(40, 60), 127);
+m.noteOff(0, 40);
+
+(
+~panic = {
+	(0..127).do({|note| m.noteOff(0, note) });
+};
+)
+
+CmdPeriod.add(~panic);
+
+
+
 
 
 (
