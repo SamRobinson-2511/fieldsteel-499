@@ -152,20 +152,38 @@ SynthDef(\reverb, {
 
 )
 
-Synth(\pulse_sus);
+
 Synth(\reverb, [in: ~reverbBus, out: 0]);
+Synth(\pulse_sus);
 x = Synth(\pulse_sus, [out: ~reverbBus]);
+x.free;
+
 
 
 Synth(\reverb, [in: ~reverbBus, out: 0]);
 Synth(\pulse, [freq: rrand(50, 100).midicps, amp: 0.4, \out, ~reverbBus]);
 
-s.scope;
+//Order of Execution
+//NodeTree:
 
+s.options.blockSize;
 
+//Sources closer to head, Effects closer to tail
+// \addActions
 
+Synth(\pulse_sus);
+~reverbSynth = Synth(\reverb, [in: ~reverbBus, out: 0]);
+x = Synth(\pulse_sus, [out: ~reverbBus], ~reverbSynth, \addBefore);
 
+//make two groups
+~sourceGroup = Group.new();
+~fxGroup = Group.new(~sourceGroup, \addAfter);
 
+Synth(\pulse_sus);
+~reverbSynth = Synth(\reverb, [in: ~reverbBus, out: 0], ~fxGroup);
+Synth(\pulse_sus, [out: ~reverbBus], ~sourceGroup);
+~sourceGroup.freeAll;
+~fxGroup.freeAll;
 
 
 
