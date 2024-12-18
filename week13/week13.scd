@@ -54,3 +54,8 @@ OSCdef(\receiver, {
 }, '/test');
 )
 
+OSCFunc.trace(false);
+
+//Touch OSC
+
+
