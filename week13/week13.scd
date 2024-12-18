@@ -33,7 +33,7 @@ s.sendMsg('/n_free', 3456);
 NetAddr.langPort;
 
 ~sam = NetAddr("192.168.12.228", 57120);
-~sam.sendMsg('/test', 24);
+~sam.sendMsg('/test', -12, 1);
 
 (
 OSCdef(\receiver, {
@@ -45,8 +45,11 @@ s.boot;
 (
 OSCdef(\receiver, {
 	|msg|
+	var amp;
 	msg.postln;
-	Synth(\play, [buf: b, amp: 0.2, rate: msg[1].midiratio])
+	amp = msg[2];
+	amp = amp.clip(0, 0.5);
+	Synth(\play, [buf: b, amp: amp, rate: msg[1].midiratio])
 
 }, '/test');
 )
