@@ -1,4 +1,7 @@
 //https://www.youtube.com/watch?v=jfak2umWzFA
+//the writing to soundfile one: https://www.youtube.com/watch?v=HCRXImVxgxw
+
+
 s.boot;
 
 
@@ -131,9 +134,35 @@ s.newBusAllocators; //prepend
 ~delayBus.numChannels;
 )
 
+(
+SynthDef(\pulse_sus, {
+	var sig, freq;
+	freq = LFNoise0.kr(8!2).exprange(100, 1000);
+	sig = Pulse.ar(freq, \width.ir(0.5)).sum * 0.1;
+	sig = LPF.ar(sig, 1000);
+	Out.ar(\out.kr(0), sig);
+}).add;
 
+SynthDef(\reverb, {
+	var sig;
+	sig = In.ar(\in.ir(0), 2);
+	sig = FreeVerb2.ar(sig[0], sig[1], 0.3, 0.99);
+	Out.ar(\out.ir(0), sig);
+}).add;
+
+)
+
+Synth(\pulse_sus);
+Synth(\reverb, [in: ~reverbBus, out: 0]);
+x = Synth(\pulse_sus, [out: ~reverbBus]);
+
+
+Synth(\reverb, [in: ~reverbBus, out: 0]);
+Synth(\pulse, [freq: rrand(50, 100).midicps, amp: 0.4, \out, ~reverbBus]);
 
 s.scope;
+
+
 
 
 
