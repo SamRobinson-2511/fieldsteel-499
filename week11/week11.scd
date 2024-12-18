@@ -18,10 +18,34 @@ m.noteOff(0, 40);
 };
 )
 
+(
+p = Pbind(
+	\type, \midi,
+	\midiout, m,
+	\midicmd, \noteOn,
+	\midinote, Pwhite(40, 90, inf),
+	\sustain, 0.08,
+	\amp, Pexprand(0.1, 0.5, inf),
+	\dur, Prand([0.1, 0.2, 0.4], inf)
+);
+q = p.play;
+)
+
+q.stop;
+
 CmdPeriod.add(~panic);
 
-
-
+(
+(
+type: \midi,
+midiout: m,
+midicmd: \noteOn,
+chan: 0,
+midinote: 72,
+sustain: 2,
+amp: 0.2
+).play;
+)
 
 
 (
