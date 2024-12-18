@@ -73,14 +73,52 @@ w.alwaysOnTop_(true);
 Slider.browse;
 
 
+//Values and Actions
+(
+Window.closeAll;
+w = Window(bounds: Rect(100, 100, 100, 400)).front;
+~s1 = Slider();
+~s1.action_({ |v| v.value.postln });
+~js1 = Slider2D();
+~js1.action_({ |v| v.x.postln; v.y.postln; });
+~k1 = Knob();
+~k1.action_({ |v| v.value.postln});
+
+w.layout_(HLayout(~s1, ~js1, ~k1));
+w.alwaysOnTop_(true);
+)
+
+~s1.value;
+~s1.value_(0.2);
+~s1.valueAction_(0.8);
+
+
+//List of GUI Classes
 
 
 
+(
+Window.closeAll;
+g = Group();
 
+x = {
+	var sig;
+	sig = SinOsc.ar(\freq.kr(300).lag(0.1), mul: 0.1!2); //Lag
+}.play(target: g);
 
+w = Window(bounds: Rect(100, 100, 100, 400)).front;
 
+~s1 = Slider();
+~s1.action_({
+	|v|
+	x.set(\freq, v.value.linexp(0, 1, 200, 1000).postln)
+});
+w.layout_(HLayout(~s1, ~js1, ~k1));
+w.alwaysOnTop_(true);
+w.onClose_({g.freeAll});
+)
+x.free;
 
-
-
+//NodeWatcher
 
 
