@@ -122,3 +122,58 @@ x.free;
 //NodeWatcher
 
 
+
+//MIDI
+MIDIIn.connectAll;
+MIDIFunc.trace(true);
+
+(
+Window.closeAll;
+
+MIDIdef.cc(\s1, {
+	|val, num, chan, src|
+	defer{
+		~s1.valueAction_(val/127)
+	};
+}, ccNum: 74);
+
+w = Window(bounds: Rect(1000, 100, 100, 400)).front;
+w.alwaysOnTop_(true);
+~s1 = Slider();
+~s1.action_({|v| v.value.postln});
+w.layout_(HLayout(~s1));
+)
+s.quit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
